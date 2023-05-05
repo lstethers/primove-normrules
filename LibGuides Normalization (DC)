@@ -1,3 +1,7 @@
+// for our LibGuides Dublin Core records
+// fields not specified here are transferred directly into the same DC field as they originated from with no transformations
+
+// set all records to Open Access
 rule "add OA indication"
 when
    True
@@ -5,6 +9,7 @@ then
    set "Unrestricted online access" in "dcterms"."accessRights"
 end
 
+// set all records to resource type of research_guide
 rule "add research_guide resource type"
 when
    True
@@ -12,6 +17,7 @@ then
    set "research_guide" in "dc"."type"
 end
 
+// append Research Guide to end of title for all records
 rule "add Research Guide to end of title"
 when
    True
