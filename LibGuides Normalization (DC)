@@ -1,0 +1,22 @@
+rule "add OA indication"
+when
+   True
+then
+   set "Unrestricted online access" in "dcterms"."accessRights"
+end
+
+rule "add research_guide resource type"
+when
+   True
+then
+   set "research_guide" in "dc"."type"
+end
+
+rule "add Research Guide to end of title"
+when
+   True
+then 
+   set TEMP"1" to dc value "dc"."title"
+   add suffix (TEMP"1"," Research Guide")
+   set "dc"."title" to TEMP"1"
+end
