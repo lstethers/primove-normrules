@@ -1,0 +1,40 @@
+// for our ArchivesSpace Dublin Core records
+// fields not specified here are transferred directly into the same DC field as they originated from with no transformations
+
+rule "move dc.type to dc.format"
+when
+   exist "dc"."type"
+then
+   move "dc"."type" to "dc"."format"
+end
+
+// set Resource Type for all records to archival_material_manuscripts
+rule "add archives resource type"
+when
+   True
+then
+   set "archival_material_manuscripts" in "dc":"type"
+end
+
+// change the publisher field to Wesleyan University for all existing publisher fields
+rule "remove all publisher fields"
+when 
+    "dc"."publisher" not equals "Wesleyan University"    
+then
+   set "Wesleyan University" in "dc":"publisher"
+end
+
+// create a publisher field with the value of Wesleyan University in case there wasn't one already
+rule "add Wesleyan University as publisher"
+when
+   True
+then
+   set "Wesleyan University" in "dc":"publisher" 
+end
+
+rule "move dc.coverage to dc.subject"
+when
+   exist "dc"."coverage"
+then
+   move "dc"."coverage" to "dc"."subject"
+end
