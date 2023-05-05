@@ -1,0 +1,146 @@
+// Islandora 2 DC record to Primo DC record using XML transformation rules
+// all fields must be explicity specified in these rules in order to appear in the Primo VE record
+
+rule "Contributor" 
+when
+exist "//*[local-name()='contributor']/text()"
+then
+copy "//*[local-name()='contributor']/text()" to "dc"."contributor"
+end
+
+// dc.coverage
+rule "Coverage" 
+when
+exist "//*[local-name()='coverage']/text()"
+then
+copy "//*[local-name()='coverage']/text()" to "dc"."coverage"
+end
+
+// dc.date
+rule "Date" 
+when
+exist "//*[local-name()='date']/text()"
+then
+copy "//*[local-name()='date']/text()" to "dc"."date"
+end
+
+// dc.description -- need to remove some html tags that appear in the values
+// wish I could figure out a more efficient way to do this than specifying each tag I want to remove.
+rule "Description with basic html tags removed" 
+when
+exist "//*[local-name()='description']/text()"
+then
+  set TEMP"1" to xpath "//*[local-name()='description']/text()"
+  remove string (TEMP"1","<p>")
+  remove string (TEMP"1","</p>")
+  remove string (TEMP"1","<br>|<br/>|<br />")
+  replace string by string (TEMP"1","&amp;","&")
+//set TEMP"1" in "dc"."description" // this sets everything into one description
+//copy TEMP"1" to "dc"."description" // unable to expand
+//move TEMP"1" to "dc"."description" // unable to expand
+//set  "dc"."description" to TEMP"1"  // unable to expand
+set TEMP"1" in "dc"."description"
+end
+
+// dc.format
+rule "Format" 
+when
+exist "//*[local-name()='format']/text()"
+then
+copy "//*[local-name()='format']/text()" to "dc"."format"
+end
+
+// dc.identifier from the identifier in the record header
+rule "Main identifier (from record header)"
+when 
+      exist "//*[local-name()='record']/*[local-name()='header']/*[local-name()='identifier']"
+then 
+      copy  "//*[local-name()='record']/*[local-name()='header']/*[local-name()='identifier']/." to "dc"."identifier" 
+end 
+
+// dc.identifier from any dc.identifier fields in the record body
+rule "Other identifiers (from record body)"
+when 
+exist "//*[local-name()='identifier']/text()"
+then 
+copy "//*[local-name()='identifier']/text()" to "dc"."identifier"
+end 
+
+// dc.language
+rule "Language" 
+when
+exist "//*[local-name()='language']/text()"
+then
+copy "//*[local-name()='language']/text()" to "dc"."language"
+end
+
+// dc.publisher
+rule "Publisher" 
+when
+exist "//*[local-name()='publisher']/text()"
+then
+copy "//*[local-name()='publisher']/text()" to "dc"."publisher"
+end
+
+// dc.relation
+rule "Relation" 
+when
+exist "//*[local-name()='relation']/text()"
+then
+copy "//*[local-name()='relation']/text()" to "dc"."relation"
+end
+
+// #################### Access Rights Rules
+// dc.rights
+rule "dc.rights"
+   when 
+	  exist "//*[local-name()='rights']/text()"
+   then 
+      copy "//*[local-name()='rights']/text()" to "dc"."rights"
+end 
+
+// set open access indicator in dcterms.accessrights when dc.rights contains certain phrases
+rule "dcterms.accessRights -- sets open access indicator"
+   when 
+	  exist "//*[local-name()='rights']/text()"
+      AND 
+	 (exist "//*[local-name()='rights'][(contains(text(),'No Copyright - United States'))]"
+
+     OR
+         exist "//*[local-name()='rights'][(contains(text(),'No Known Copyright'))]")
+     then 
+      set "Unrestricted online access" in "dcterms"."accessRights"
+end
+
+// dc.subject - only copy dc.subject if it does not contain an Argus call number
+rule "Subject -- exclude call number which is on Argus records"
+when
+exist "//*[local-name()='subject'][not(contains(.,'LH1.W45 A6'))]"
+then
+copy "//*[local-name()='subject'][not(contains(.,'LH1.W45 A6'))]" to "dc"."subject"
+end
+
+// #################### Title rules
+// dc.title - copy first occurrence of the title into dc.title
+rule "Title" 
+when
+exist "//*[local-name()='title'][1]/text()"
+then
+copy "//*[local-name()='title'][1]/text()" to "dc"."title"
+end
+
+// dcterms.alternative - copy all occurrences of the title except the first one into dcterms.alternative
+rule "Alternative Titles" 
+when
+exist "//*[local-name()='title'][position()>1]/text()"
+then
+copy "//*[local-name()='title'][position()>1]/text()" to "dcterms"."alternative" 
+end
+
+// #################### dc.type (used in Dublin Core to Discovery Resource Type Mapping Table). copy only the the first occurrence of dc.type to dc.type
+rule "Type"
+when
+exist "//*[local-name()='type'][1]/text()"
+then
+copy "//*[local-name()='type'][1]/text()" to "dc"."type"
+end
