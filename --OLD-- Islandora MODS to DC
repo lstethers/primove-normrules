@@ -1,0 +1,163 @@
+// Islandora MODS XML transformed to Primo VE Dublin Core
+// these rules are pretty rough and I didn't really know what I was doing in XPath yet
+// please don't use them as a model, but they may be useful to see what kinds of logic and transformations are possible in XPath
+
+rule "Source"
+when
+     true
+then
+     set "Wesleyan Digital Collections (Islandora)" in "dc"."source"
+end
+
+rule "Main identifier"
+when 
+      exist "//*[local-name()='record']/*[local-name()='header']/*[local-name()='identifier']"
+then 
+      copy  "//*[local-name()='record']/*[local-name()='header']/*[local-name()='identifier']/." to "dc"."identifier" 
+end 
+
+rule "Other identifiers"
+when 
+    exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='identifier']"
+then 
+         copy "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='identifier']/." to "dc"."identifier"
+end 
+
+// #################### fill dc.type (used in DC to resource type mapping table) from genre
+rule "dc.type--resource type"
+when 
+      exist "(//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='genre'])"
+then 
+       copy "(//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='genre']/.)" to "dc"."type" 
+end
+// #################### Title rules
+rule "Title"
+   when 
+      exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title'][1]"
+   then 
+      copy "normalize-space(//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title'][1]/.)" to "dc"."title" 
+end 
+
+rule "Alternative Title"
+   when 
+exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title'][@type='alternative']"
+   then 
+      copy "normalize-space(//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title'][2][@type='alternative']/.)" to "dcterms"."alternative" 
+end
+
+// #################### Contributor rules
+rule "Contributor"
+   when 
+      exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='name']/*[local-name()='displayForm']"
+   then 
+      copy  "normalize-space(//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='name']/*[local-name()='displayForm']/.)" to "dc"."contributor"
+end 
+
+// #################### Subject rules
+rule "dc.subject"
+when 
+    exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='subject']"
+then 
+         copy "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='subject']/*[local-name()='topic']/." to "dc"."subject"
+end 
+
+// #################### Description Rules, including thumbnail
+rule "dc.description --.thumbnail" 
+   when 
+         exist "//*[local-name()='record']/*[local-name()='header']/*[local-name()='identifier']"
+then
+  set TEMP"1" to xpath "//*[local-name()='record']/*[local-name()='header']/*[local-name()='identifier'][starts-with(., 'oai:digitalcollections.wesleyan.edu:')]/."
+  replace string by string (TEMP"1","oai:digitalcollections.wesleyan.edu:","")
+  replace string by string (TEMP"1","_","%3A")
+  add prefix (TEMP"1","https://digitalcollections.wesleyan.edu/islandora/object/")
+  add suffix (TEMP"1","/datastream/TN/view")
+  set TEMP"1" in "dc"."description"
+end
+
+rule "dc.description"
+when 
+    exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='abstract']"
+then 
+    copy "normalize-space(//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='abstract']/.)" to "dc"."description"
+end 
+
+// #################### Access Rights Rules
+rule "dc.rights"
+   when 
+	  exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='accessCondition']"
+   then 
+      copy "normalize-space(//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='accessCondition']/.)" to "dc"."rights"
+end 
+
+rule "dcterms.accessRights--open access"
+   when 
+	 exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='accessCondition']"
+      AND 
+         (exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='accessCondition'][(contains(lower-case(text()),'no copyright – united states'))]"
+     OR
+         exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='accessCondition'][(contains(lower-case(text()),'no known copyright'))]")
+     then 
+      set "Unrestricted online access" in "dcterms"."accessRights"
+end
+
+// #################### Language Rules
+rule "dc.language"
+   when 
+      exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='language']"
+   then 
+      copy "normalize-space(//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='language']/*[local-name()='languageTerm']/.)" to "dc"."language"
+end 
+
+// #################### Publisher Rules
+// add all the publishers. then add one that says Wesleyan
+rule "dc.publisher"
+   when 
+      exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='originInfo']/*[local-name()='publisher']"
+   then 
+       copy "normalize-space(//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='originInfo']/*[local-name()='publisher']/.)" to "dc"."publisher"
+end 
+
+rule "publisher Wesleyan"
+   when 
+      true
+   then
+       set "Wesleyan University" in "dc"."publisher" 
+end	 
+// #################### Format (Physical description and type of resource) Rules
+rule "dcterms.format type of resource" 
+   when 
+exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='typeOfResource']"
+   then 
+      copy "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='typeOfResource']" to "dcterms"."format"
+end 
+rule "dcterms.format physical description"
+   when 
+      exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='physicalDescription']"
+AND NOT exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='physicalDescription'][(contains(lower-case(text()),'other'))]"
+   then 
+      copy "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='physicalDescription']" to "dcterms"."format"
+end 
+// #################### Date Rules
+rule "dcterms.issued"
+   when 
+      exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='originInfo']/*[local-name()='dateIssued']"
+   then 
+	copy "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='originInfo']/*[local-name()='dateIssued']/." to "dcterms"."issued"
+end 
+
+rule "dcterms.created"
+	when
+      exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='originInfo']/*[local-name()='dateCreated']"
+   then 
+	copy "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='originInfo']/*[local-name()='dateCreated']/." to "dcterms"."created"
+end 
+
+// #################### Related Items Rules
+rule "dcterms.isPartOf" 
+   when 
+exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='relatedItem']/*[local-name()='titleInfo'][1]/*[local-name()='title']"
+AND NOT exist "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='relatedItem']/*[local-name()='titleInfo'][1][@type='abbreviated']"
+   then 
+      copy "//*[local-name()='record']/*[local-name()='metadata']/*[local-name()='mods']/*[local-name()='relatedItem']/*[local-name()='titleInfo'][1]/*[local-name()='title']" to "dcterms"."isPartOf"
+end
+
