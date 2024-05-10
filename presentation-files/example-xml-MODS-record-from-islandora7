@@ -1,0 +1,102 @@
+<record>
+<header>
+<identifier>oai:digitalcollections.wesleyan.edu:ir_2623</identifier>
+<datestamp>2021-04-09T13:37:42Z</datestamp>
+<setSpec>wesleyanct_etd_hon_theses</setSpec>
+</header>
+<metadata>
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:etd="http://www.ndltd.org/standards/metadata/etdms/1.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
+<titleInfo>
+<title>“Choose We”</title>
+<subTitle>Shakespeare and the Early Modern English Public Sphere</subTitle>
+</titleInfo>
+<name type="personal">
+<role>
+<roleTerm authority="marcrelator" type="text">author</roleTerm>
+</role>
+<displayForm>George McConnell Newman Perez</displayForm>
+<namePart type="given">George McConnell Newman</namePart>
+<namePart type="family">Perez</namePart>
+<description>xxxx@wesleyan.edu</description>
+</name>
+<name type="personal">
+<role>
+<roleTerm authority="marcrelator" type="text">Thesis advisor</roleTerm>
+</role>
+<displayForm>Oliver Holmes</displayForm>
+</name>
+<name type="personal">
+<role>
+<roleTerm authority="marcrelator" type="text">Thesis advisor</roleTerm>
+</role>
+<displayForm>Harris Friedberg</displayForm>
+</name>
+<name type="corporate" authority="lcnaf">
+<role>
+<roleTerm authority="marcrelator" type="text">Degree grantor</roleTerm>
+</role>
+<namePart>Wesleyan University</namePart>
+<namePart>History</namePart>
+<namePart>English</namePart>
+</name>
+<typeOfResource>text</typeOfResource>
+<genre authority="aat">theses</genre>
+<genre>Dissertation/Thesis</genre>
+<identifier type="local">1199_356601</identifier>
+<originInfo>
+<dateCreated>2020-04-15</dateCreated>
+<dateIssued keyDate="yes" encoding="w3cdtf">2020-04-15</dateIssued>
+<issuance>monographic</issuance>
+</originInfo>
+<language>
+<languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+</language>
+<physicalDescription>
+<form authority="marcform">electronic</form>
+<digitalOrigin>born digital</digitalOrigin>
+<internetMediaType>application/pdf</internetMediaType>
+<extent>97 pages</extent>
+</physicalDescription>
+<abstract>The fact that Elizabeth I’s reign was formative is well known. And yet, over the course of the last century, the way in which that reign has been imagined has changed drastically. More importantly, what was imagined as formative has changed dramatically. Disfavoring the myth that the Tudors ushered in peace and prosperity after the carnage of civil war, and the vision of ‘Merrie England’s’ Elizbethan utopia, scholars have come to see just how anxiously unformed Elizabeth I’s reign was. Peter Lake and Steven Pincus, in a landmark collection of essays, The Politics of the Public Sphere in Early Modern England, provide a snapshot of a reign that was obsessively insecure: “we see a state perceiving itself to be under dynastic, confessional, and socio-economic threat, resorting to various modes of political communication and the invocation of various publics to shore up its position”. Shakespeare inhabits this moment in history, his plays ingeniously participate within the ebb and flow of customs, politics, and public spheres that existed. Indeed, the plays are themselves formative; they offer visions of political worlds and landscapes, while occupying what many scholars consider a deeply democratized theater space that encouraged crowd participation. Just as history has revisited Elizabeth I, literary scholars have revisited Shakespeare.</abstract>
+<location>
+<url>https://doi.org/10.14418/wes01.1.2168</url>
+</location>
+<note type="statement of responsibility">In Copyright – Non-Commercial Use Permitted (InC-NC)</note>
+<location>
+<physicalLocation>Wesleyan University Library, Wesleyan University, Middletown, CT, 06422, USA</physicalLocation>
+</location>
+<accessCondition type="use and reproduction">In Copyright – Non-Commercial Use Permitted (InC-NC)</accessCondition>
+<recordInfo>
+<languageOfCataloging>
+<languageTerm authority="iso639-2b">eng</languageTerm>
+</languageOfCataloging>
+</recordInfo>
+<name type="personal">
+<role>
+<roleTerm authority="marcrelator" type="text">Committee member</roleTerm>
+</role>
+<displayForm/>
+</name>
+<note/>
+<subject authority="lcsh">
+<topic/>
+<geographic/>
+<temporal/>
+</subject>
+<identifier type="isbn"/>
+<classification authority="lcc"/>
+<classification edition="21" authority="ddc"/>
+<extension>
+<etd:degree>
+<etd:name>Bachelor of Arts with Departmental Honors</etd:name>
+<etd:level/>
+<etd:discipline>English</etd:discipline>
+<etd:discipline>History</etd:discipline>
+</etd:degree>
+</extension>
+<identifier type="u1"/>
+<identifier type="u2"/>
+<identifier>https://digitalcollections.wesleyan.edu/object/ir-2623</identifier>
+</mods>
+</metadata>
+</record>
