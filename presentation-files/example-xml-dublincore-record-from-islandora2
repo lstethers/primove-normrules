@@ -1,0 +1,22 @@
+<record>
+<header>
+<identifier>oai:i2-prod.wesleyan.edu:node-2041</identifier>
+<datestamp>2022-12-12T17:53:14Z</datestamp>
+<setSpec>oai_pmh:all_repository_items</setSpec>
+</header>
+<metadata>
+<qdc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:doc="http://www.lyncode.com/xoai" xmlns:qdc="http://www.openarchives.org/OAI/2.0/qdc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/qdc/ http://www.openarchives.org/OAI/2.0/qdc.xsd">
+<dc:title>The college argus (June 1, 1870)</dc:title>
+<dc:coverage>Middletown, Middlesex County, Connecticut, United States</dc:coverage>
+<dc:date>1870-06-01</dc:date>
+<dc:type>newspapers</dc:type>
+<dc:type>Collection</dc:type>
+<dc:language>eng</dc:language>
+<dc:subject>LH1.W45 A6</dc:subject>
+<dc:subject>Student publications</dc:subject>
+<dc:identifier>wsl--10804</dc:identifier>
+<dc:publisher>Wesleyan University</dc:publisher>
+<dc:rights>No Copyright - United States</dc:rights>
+</qdc:dc>
+</metadata>
+</record>
