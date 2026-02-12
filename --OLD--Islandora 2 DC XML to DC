@@ -1,5 +1,7 @@
+// This set of rules works but is no longer maintained
 // Islandora 2 DC record to Primo DC record using XML transformation rules
 // all fields must be explicity specified in these rules in order to appear in the Primo VE record
+// author: Lori Stethers, Wesleyan University 2022
 
 rule "Contributor" 
 when
