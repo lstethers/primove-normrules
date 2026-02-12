@@ -1,0 +1,117 @@
+rule "Title" 
+
+// Figshare DC to Primo VE DC using XML transformation rules
+// all fields you want to use in Primo VE must be explicitly specified in this rule
+// used in tandem with Figshare creator XML rule
+// author: Lori Stethers, Wesleyan University 2026
+
+// dc.title - copy only the first occurrence of dc.title to dc.title. all others go into dcterms.alternative in the next rul
+when
+exist "//*[local-name()='title'][1]/text()"
+then
+copy "//*[local-name()='title'][1]/text()" to "dc"."title"
+end
+
+// dcterms.alternative - copy all occurrences of the title except the first one into dcterms.alternative
+rule "Alternative Titles" 
+when
+exist "//*[local-name()='title'][position()>1]/text()"
+then
+copy "//*[local-name()='title'][position()>1]/text()" to "dcterms"."alternative" 
+end
+
+// dc.subject
+rule "Subject"
+when
+exist "//*[local-name()='subject']/text()"
+then
+copy "//*[local-name()='subject']/text()" to "dc"."subject"
+end
+
+// dc.description -- add CDATA wrapper to make sure the html displays okay in Primo VE. Some Figshare records have embedded html in their description field, which sometimes displays as text in Primo if not wrapped.
+rule "Description"
+when
+   exist "//*[local-name()='description'][not(contains(text(),'<![CDATA['))]"
+then
+   set TEMP"1" to xpath "//*[local-name()='description']/text()"
+   add prefix (TEMP"1","<![CDATA[")
+   set TEMP"1" in "dc"."description"
+end
+
+// dc.date -- strip out time and time zone to leave just date
+rule "Date" 
+when
+exist "//*[local-name()='date']/text()"
+then
+set TEMP"1" to xpath "//*[local-name()='date']/text()"
+remove substring using regex (TEMP"1","T.+$")
+set TEMP"1" in "dc"."date"
+end
+
+// dc.coverage
+rule "Coverage" 
+when
+exist "//*[local-name()='coverage']/text()"
+then
+copy "//*[local-name()='coverage']/text()" to "dc"."coverage"
+end
+
+// dc.type - This value is used in Dublin Core to Discovery Resource Type Mapping Table. Copy only the the first occurrence of dc.type to dc.type.
+rule "Type"
+when
+exist "//*[local-name()='type'][1]/text()"
+then
+copy "//*[local-name()='type'][1]/text()" to "dc"."type"
+end
+
+// dc.identifier from the identifier in the record header 
+rule "Main identifier (from record header) as a URL"
+when 
+      exist "//*[local-name()='record']/*[local-name()='header']/*[local-name()='identifier']"
+then 
+      copy  "//*[local-name()='record']/*[local-name()='header']/*[local-name()='identifier']/." to "dc"."identifier" 
+end 
+
+// dc.identifier from the identifier in the record body
+rule "identifier as a URL"
+when 
+    exist "//*[local-name()='identifier']/text()"
+then 
+    copy "//*[local-name()='identifier']/text()" to "dc"."identifier" 
+end
+
+// dc.relation - transform it into it a Wesleyan Figshare URL and fix some spaces that Figshare is passing us that should be underscores
+rule "Relation" 
+when
+exist "//*[local-name()='relation']/text()"
+then
+set TEMP"1" to xpath "//*[local-name()='relation']/text()"
+replace string by string (TEMP"1","https://figshare.com","https://figshare.wesleyan.edu")
+replace string by string (TEMP"1"," ","_")
+replace string by string (TEMP"1","%20","_")
+set TEMP"1" in "dc"."relation"
+end
+
+// #################### Access Rights Rules
+// dc.rights
+rule "dc.rights"
+   when 
+	  exist "//*[local-name()='rights']/text()"
+   then 
+      copy "//*[local-name()='rights']/text()" to "dc"."rights"
+end
+
+// dc.accessRights - set open access indicator when specific dc.rights values are present
+rule "dc.accessRights"
+when 
+      exist "//*[local-name()='rights'][text()='CC BY 4.0']" OR
+      exist "//*[local-name()='rights'][text()='Reuse for any purpose and re-share (CC-BY-SA)']" OR
+      exist "//*[local-name()='rights'][text()='Apache 2.0']" OR
+      exist "//*[local-name()='rights'][text()='GPL 3.0+']" OR
+      exist "//*[local-name()='rights'][text()='GPL 2.0+']" OR
+      exist "//*[local-name()='rights'][text()='GPL']" OR
+      exist "//*[local-name()='rights'][text()='MIT']" OR
+      exist "//*[local-name()='rights'][text()='CC0']" 
+then 
+      set "Unrestricted online access" in "dcterms"."accessRights"
+end

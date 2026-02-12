@@ -1,0 +1,908 @@
+rule "dc_creator_1"
+
+// Figshare DC to Primo VE DC using XML transformation rules
+// this rule only transforms the dc.creator field
+// used in tandem with Figshare XML rule which addresses all the other fields
+// this rule is repeated 20 times to accommodate up to 20 creators
+// this transforms a dc.creator of format FName [optional middle name or initial] LName [optional suffix] (nnnnnnn) 
+// Resulting name will have format of LName Suffix, FName Middle
+// author: Lori Stethers, Wesleyan University 2026
+
+when
+exist "//*[local-name()='creator'][1]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][1]"
+set TEMP"2" to xpath "//*[local-name()='creator'][1]"
+set TEMP"3" to xpath "//*[local-name()='creator'][1]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_2"
+
+when
+exist "//*[local-name()='creator'][2]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][2]"
+set TEMP"2" to xpath "//*[local-name()='creator'][2]"
+set TEMP"3" to xpath "//*[local-name()='creator'][2]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_3"
+
+when
+exist "//*[local-name()='creator'][3]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][3]"
+set TEMP"2" to xpath "//*[local-name()='creator'][3]"
+set TEMP"3" to xpath "//*[local-name()='creator'][3]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_4"
+
+when
+exist "//*[local-name()='creator'][4]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][4]"
+set TEMP"2" to xpath "//*[local-name()='creator'][4]"
+set TEMP"3" to xpath "//*[local-name()='creator'][4]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_5"
+
+when
+exist "//*[local-name()='creator'][5]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][5]"
+set TEMP"2" to xpath "//*[local-name()='creator'][5]"
+set TEMP"3" to xpath "//*[local-name()='creator'][5]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_6"
+
+when
+exist "//*[local-name()='creator'][6]/text()"
+
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][6]"
+set TEMP"2" to xpath "//*[local-name()='creator'][6]"
+set TEMP"3" to xpath "//*[local-name()='creator'][6]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_7"
+
+when
+exist "//*[local-name()='creator'][7]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][7]"
+set TEMP"2" to xpath "//*[local-name()='creator'][7]"
+set TEMP"3" to xpath "//*[local-name()='creator'][7]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_8"
+
+when
+exist "//*[local-name()='creator'][8]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][8]"
+set TEMP"2" to xpath "//*[local-name()='creator'][8]"
+set TEMP"3" to xpath "//*[local-name()='creator'][8]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_9"
+
+when
+exist "//*[local-name()='creator'][9]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][9]"
+set TEMP"2" to xpath "//*[local-name()='creator'][9]"
+set TEMP"3" to xpath "//*[local-name()='creator'][9]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_10"
+
+when
+exist "//*[local-name()='creator'][10]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][10]"
+set TEMP"2" to xpath "//*[local-name()='creator'][10]"
+set TEMP"3" to xpath "//*[local-name()='creator'][10]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_11"
+
+when
+exist "//*[local-name()='creator'][11]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][11]"
+set TEMP"2" to xpath "//*[local-name()='creator'][11]"
+set TEMP"3" to xpath "//*[local-name()='creator'][11]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_12"
+
+when
+exist "//*[local-name()='creator'][12]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][12]"
+set TEMP"2" to xpath "//*[local-name()='creator'][12]"
+set TEMP"3" to xpath "//*[local-name()='creator'][12]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_13"
+
+when
+exist "//*[local-name()='creator'][13]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][13]"
+set TEMP"2" to xpath "//*[local-name()='creator'][13]"
+set TEMP"3" to xpath "//*[local-name()='creator'][13]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_14"
+
+when
+exist "//*[local-name()='creator'][14]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][14]"
+set TEMP"2" to xpath "//*[local-name()='creator'][14]"
+set TEMP"3" to xpath "//*[local-name()='creator'][14]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_15"
+
+when
+exist "//*[local-name()='creator'][15]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][15]"
+set TEMP"2" to xpath "//*[local-name()='creator'][15]"
+set TEMP"3" to xpath "//*[local-name()='creator'][15]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_16"
+
+when
+exist "//*[local-name()='creator'][16]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][16]"
+set TEMP"2" to xpath "//*[local-name()='creator'][16]"
+set TEMP"3" to xpath "//*[local-name()='creator'][16]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_17"
+
+when
+exist "//*[local-name()='creator'][17]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][17]"
+set TEMP"2" to xpath "//*[local-name()='creator'][17]"
+set TEMP"3" to xpath "//*[local-name()='creator'][17]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_18"
+
+when
+exist "//*[local-name()='creator'][18]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][18]"
+set TEMP"2" to xpath "//*[local-name()='creator'][18]"
+set TEMP"3" to xpath "//*[local-name()='creator'][18]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_19"
+
+when
+exist "//*[local-name()='creator'][19]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][19]"
+set TEMP"2" to xpath "//*[local-name()='creator'][19]"
+set TEMP"3" to xpath "//*[local-name()='creator'][19]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
+
+rule "dc_creator_20"
+
+when
+exist "//*[local-name()='creator'][20]/text()"
+then
+
+// Initialize all TEMP variables with the raw creator value
+set TEMP"1" to xpath "//*[local-name()='creator'][20]"
+set TEMP"2" to xpath "//*[local-name()='creator'][20]"
+set TEMP"3" to xpath "//*[local-name()='creator'][20]"
+
+// Strip trailing unique number: " (12345)" from all TEMP variables
+remove substring using regex (TEMP"1","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"2","\\s*\\([0-9]+\\)\\s*$")
+remove substring using regex (TEMP"3","\\s*\\([0-9]+\\)\\s*$")
+
+// TEMP"1" = first + optional middle
+// remove suffix
+remove substring using regex (TEMP"1","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove last word
+remove substring using regex (TEMP"1","\\s\\S+$")
+
+// TEMP"2" = suffix - (if present, otherwise will be empty after next step)
+// remove everything before last space
+remove substring using regex (TEMP"2","^.*\\s")
+// Check if TEMP"2" value matches a suffix, if not it will be cleared
+remove substring using regex (TEMP"2","^(?!Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X$).*")
+
+// TEMP"3" = build final format: "last suffix, first middle" OR "last, first middle"
+// First, get just the last name
+// remove suffix
+remove substring using regex (TEMP"3","\\s+(Jr\\.|Sr\\.|I|II|III|IV|V|VI|VII|VIII|IX|X)$")
+// remove everything before the last space. TEMP3 now contains last name
+remove substring using regex (TEMP"3","^.*\\s")
+
+// Concatenate them together
+// If there's a suffix (TEMP"2" is not empty), concatenate: last + space + suffix
+// Note: concatenate with delimiter only adds if both parts exist. Now TEMP2 = LNAME SUFFIX
+concatenate with delimiter (TEMP"3",TEMP"2"," ")
+// Concatenate: "last [suffix]" + ", " + "first middle". Now TEMP6 = LNAME SUFFIX, FNAME MNAME
+concatenate with delimiter (TEMP"3",TEMP"1",", ")
+set TEMP"3" in "dc"."creator"
+
+end
